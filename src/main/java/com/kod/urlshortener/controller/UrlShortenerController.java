@@ -1,5 +1,7 @@
 package com.kod.urlshortener.controller;
 
+import com.kod.urlshortener.db.SimpleShortenedUrlPersistor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,9 @@ import java.security.NoSuchAlgorithmException;
 public class UrlShortenerController {
     @Value("${base.url}")
     private String basePath;
+
+    @Autowired
+    SimpleShortenedUrlPersistor persistor;
 
     private MessageDigest hashAlgorithm;
 
@@ -31,6 +36,8 @@ public class UrlShortenerController {
         byte[] hashed = hashAlgorithm.digest(url.getBytes());
         String shortened = convertToHex(hashed);
         System.out.println("---- length of shortened parth: " + shortened.length());
+
+        persistor.insertUrlShortenedUrlPair(url, shortened);
 
         String shortenedFullPath = basePath + "/" + shortened;
         System.out.println("-- shortenUrl will return with: '" + shortenedFullPath + "'");
