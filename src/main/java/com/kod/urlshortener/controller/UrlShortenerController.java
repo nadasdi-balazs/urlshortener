@@ -38,11 +38,10 @@ public class UrlShortenerController {
     }
 
     private String convertToHex(final byte[] messageDigest) {
-        BigInteger bigint = new BigInteger(1, messageDigest);
-        String hexText = bigint.toString(16);
-        while (hexText.length() < 32) {
-            hexText = "0".concat(hexText);
-        }
+        BigInteger digestNumber = new BigInteger(1, messageDigest);
+        BigInteger divider = new BigInteger("16777259");
+        BigInteger shortedMessageDigest = digestNumber.mod(divider);
+        String hexText = shortedMessageDigest.toString(16);
         return hexText;
     }
 }
